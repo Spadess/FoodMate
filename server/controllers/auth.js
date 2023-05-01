@@ -6,35 +6,32 @@ import User from "../models/User.js";
 
 export const register = async(req, res) =>{
   try{
-    const{
+    const {
       firstName,
       lastName,
-      email,
-      password,
-      picturePath,
-      friendsList,
       location,
-      status
+      email,
+      password
     } = req.body;
+
+    console.log(req.body);
   
     const salt = await bcrypt.genSalt(); 
     //A salt is a random string that makes the hash unpredictable. Bcrypt is a popular and trusted method for salt and hashing passwords
     const passwordHash = await bcrypt.hash(password, salt);
-
+    
     const newUser = new User({
       firstName,
       lastName,
-      email,
-      password: passwordHash,
-      picturePath,
-      friendsList,
       location,
-      status,
-      viewedProfile: Math.floor(Math.random() * 10000)
+      email,
+      password: passwordHash
     });
+  
     const savedUser = await newUser.save();
     res.status(201).json(savedUser); //201: smt has been created
   }catch(error){
+    console.log(error);
     res.status(500).json({Error: error.message}); //500: error code
   }
 }
@@ -55,22 +52,8 @@ export const login = async(req,res) => {
   
     const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET);
     //delete user.password; //delete the password -> we dont want to send it back to the frontend
-    res
-    .cookie("access_token", token, {httpOnly: true})
-    .status(200)
-    .json({user});
 
-  }catch(error){
-    res.status(500).json({Error: error.message});
-  }
-}
-
-//LOGOUT FUNCTION
-export const logout = async(req,res) => {
-  try{
-    res
-    .clearCookie("access_token")
-    .redirect("/")
+    res.status(200).json({ token, user });
 
   }catch(error){
     res.status(500).json({Error: error.message});

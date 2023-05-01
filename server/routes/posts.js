@@ -1,7 +1,7 @@
 import express from "express";
 import {createPost, getFeedPosts, getUserPosts, likePost, commentPost, deletePost} from "../controllers/posts.js";
 import {verifyToken} from "../middleware/auth.js";
-import { uploadPicture, uploadVideo} from "../upload/multer.js";
+import { uploadPicture, uploadVideo} from "../controllers/upload.js";
 
 const router = express.Router();
 

@@ -1,4 +1,5 @@
 *.log
 /server/*.log
+/client/*.log
 /server/.env
 /server/node_modules

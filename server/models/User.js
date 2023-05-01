@@ -40,8 +40,8 @@ const userSchema = new mongoose.Schema({
   status:{
     type: String,
     default: "Regular",
-  },
-  viewedProfile: Number,
+  }
+  
 },
   {timestamps: true}
 );
