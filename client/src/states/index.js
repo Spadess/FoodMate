@@ -24,7 +24,7 @@ export const authSlice = createSlice({
     },
     setFriends: (state, action) =>{
       if(state.user){
-        state.user.friends = action.payload.friends;
+        state.user.friendsList = action.payload.friendsList;
       }
       else{
         console.error("No user friends found.");
@@ -39,9 +39,15 @@ export const authSlice = createSlice({
         return post;
       });
       state.posts = updatedPosts;
+    },
+    setUserPicture: (state, action) => {
+      if(state.user){
+          state.user.picturePath = action.payload.picturePath;
+      }
+
     }
   }
 });
 
-export const {setMode, setLogin, setLogout, setFriends, setPosts, setPost} = authSlice.actions;
+export const {setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUserPicture} = authSlice.actions;
 export default authSlice.reducer;

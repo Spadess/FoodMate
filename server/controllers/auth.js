@@ -11,10 +11,9 @@ export const register = async(req, res) =>{
       lastName,
       location,
       email,
-      password
+      password,
+      picturePath
     } = req.body;
-
-    console.log(req.body);
   
     const salt = await bcrypt.genSalt(); 
     //A salt is a random string that makes the hash unpredictable. Bcrypt is a popular and trusted method for salt and hashing passwords
@@ -25,7 +24,8 @@ export const register = async(req, res) =>{
       lastName,
       location,
       email,
-      password: passwordHash
+      password: passwordHash,
+      picturePath
     });
   
     const savedUser = await newUser.save();
@@ -52,7 +52,8 @@ export const login = async(req,res) => {
   
     const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET);
     //delete user.password; //delete the password -> we dont want to send it back to the frontend
-
+    user.password = undefined; //delete doesnt work, but this does..
+    //console.log(user);
     res.status(200).json({ token, user });
 
   }catch(error){

@@ -17,15 +17,15 @@ const postSchema = mongoose.Schema(
     location: String,
     description: String,
     picturePath: String,
-    videoPath: String,
     userPicturePath: String,
+     
     likes: {
       type: Map, //map better than array of string cz a dictionary performs better -> O(1) vs O(n)
       of: Boolean
     },
     comments: {
-      type: Map,
-      of: String
+      type: Array,
+      default: [],
     }
   },
   {timestamps: true}

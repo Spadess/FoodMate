@@ -4,9 +4,8 @@ import User from "../models/User.js";
 //CREATE
 export const createPost = async (req, res) => {
   try {
-    const { userId, description, picturePath, videoPath } = req.body;
+    const { userId, description, picturePath} = req.body;
     const user = await User.findById(userId);
-    
     const newPost = new Post({
       userId,
       firstName: user.firstName,
@@ -15,13 +14,12 @@ export const createPost = async (req, res) => {
       description,
       userPicturePath: user.picturePath,
       picturePath,
-      videoPath,
       likes: {},
-      comments: {},
+      comments: [],
     });
     await newPost.save();
 
-    const post = await Post.find(); //returns all the posts in the database +new
+    const post = await Post.find().sort({createdAt : -1}); //returns all the posts in the database +new
     res.status(201).json(post);
   } catch (error) {
     res.status(409).json({Error: error.message});
@@ -31,7 +29,7 @@ export const createPost = async (req, res) => {
 //READ
 export const getFeedPosts = async (req, res) => {
   try {
-    const post = await Post.find();
+    const post = await Post.find().sort({createdAt : -1}); //sort posts by creation date
     res.status(200).json(post);
   } catch (error) {
     res.status(404).json({Error: error.message});
@@ -41,7 +39,7 @@ export const getFeedPosts = async (req, res) => {
 export const getUserPosts = async (req, res) => {
   try {
     const { userId } = req.params;
-    const post = await Post.find({ userId });
+    const post = await Post.find({ userId }).sort({createdAt : -1});
     res.status(200).json(post);
   } catch (error) {
     res.status(404).json({Error: error.message});
@@ -79,8 +77,10 @@ export const commentPost = async (req, res) => {
     const { postId } = req.params; //grab the specific post we want to comment on
     const { userId, comment } = req.body; //grab the user who made the request
     const post = await Post.findById(postId);
+    const {firstName, lastName} = await User.findById(userId);
+    const name = firstName+" "+lastName
 
-    post.comments.set(userId, comment); //add the comment to the dictionary
+    post.comments.unshift(`${name}: ${comment}`)//add comment to the beginning of the array
 
     const updatedPost = await Post.findByIdAndUpdate( //update the post with the new list of comments
       postId,
@@ -99,6 +99,8 @@ export const deletePost = async (req, res) => {
   try {
     const {postId} = req.params;
     await Post.findByIdAndDelete(postId)
+    const post = await Post.find().sort({createdAt : -1}); //sort posts by creation date
+    res.status(200).json(post);
   } catch (error) {
     res.status(404).json({Error: error.message});
   }

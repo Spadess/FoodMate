@@ -15,7 +15,7 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storage from 'redux-persist/lib/storage'; //path to store redux states
 import { PersistGate } from 'redux-persist/integration/react';
 
 //we use redux persist to save a users session

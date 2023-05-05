@@ -2,28 +2,25 @@ import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setFriends } from "state";
+import { setFriends } from "states";
 import FlexCSS from "./FlexCSS";
 import UserProfilePicture from "./UserProfilePicture";
 
-const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
+const Friend = ({ friendId, firstName, lastName, picturePath}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends);
-
+  const friendsList = useSelector((state) => state.user.friendsList);
   const { palette } = useTheme();
-  const primaryLight = palette.primary.light;
-  const primaryDark = palette.primary.dark;
+  const dark = palette.neutral.dark;
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
-
-  const isFriend = friends.find((friend) => friend._id === friendId);
+  const isFriend = friendsList.find((friend) => friend._id === friendId);
 
   const patchFriend = async () => {
     const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
+      `http://localhost:3001/api/users/${_id}/${friendId}`,
       {
         method: "PATCH",
         headers: {
@@ -33,13 +30,13 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
       }
     );
     const data = await response.json();
-    dispatch(setFriends({ friends: data }));
+    dispatch(setFriends({ friendsList: data }));
   };
 
   return (
     <FlexCSS>
       <FlexCSS gap="1rem">
-        <UserImage image={userPicturePath} size="55px" />
+        <UserProfilePicture picturePath={picturePath} size="55px" />
         <Box
           onClick={() => {
             navigate(`/profile/${friendId}`);
@@ -52,28 +49,34 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
             fontWeight="500"
             sx={{
               "&:hover": {
-                color: palette.primary.light,
+                color: medium,
                 cursor: "pointer",
               },
             }}
           >
-            {name}
+            {`${firstName} ${lastName}`}
           </Typography>
           <Typography color={medium} fontSize="0.75rem">
-            {subtitle}
+          {`@${firstName}${lastName}`}
           </Typography>
         </Box>
       </FlexCSS>
+    
+    
+    
+    {(friendId !== _id) &&
+      
       <IconButton
         onClick={() => patchFriend()}
-        sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+        sx={{ p: "0.6rem" }}
       >
         {isFriend ? (
-          <PersonRemoveOutlined sx={{ color: primaryDark }} />
+          <PersonRemoveOutlined sx={{ color: dark }} />
         ) : (
-          <PersonAddOutlined sx={{ color: primaryDark }} />
+          <PersonAddOutlined sx={{ color: dark }} />
         )}
       </IconButton>
+        }
     </FlexCSS>
   );
 };

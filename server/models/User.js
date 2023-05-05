@@ -25,10 +25,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     min: 5,
   },
-  picturePath:{
-    type: String,
-    default: "",
-  },
+  
+  picturePath: String,
+  
   friendsList:{
     type: Array,
     default: [],
@@ -39,7 +38,7 @@ const userSchema = new mongoose.Schema({
   },
   status:{
     type: String,
-    default: "Regular",
+    default: "Gourmet",
   }
   
 },

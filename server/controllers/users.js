@@ -15,7 +15,7 @@ export const getUser = async(req, res) => {
 export const getUserFriends = async(req, res) => {
   try{
     const {userId} = req.params;
-    console.log(req.user.id);
+    
     if (userId != req.user.id){
       return res.status(403).json({message: "unauthorized"});
     }

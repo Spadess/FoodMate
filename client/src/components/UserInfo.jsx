@@ -1,37 +1,47 @@
 import {
-  ManageAccountsOutlined,
   EditOutlined,
-  LocationOnOutlined
+  LocationOnOutlined,
+  VerifiedOutlined,
+  PeopleAltOutlined
 } from "@mui/icons-material";
 import { Box, Typography, Divider, useTheme } from "@mui/material";
 import UserProfilePicture from "components/UserProfilePicture";
 import FlexCSS from "components/FlexCSS";
 import WrapperCSS from "components/WrapperCSS";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { setUserPicture } from "states";
 
-const UserInfo = ({ userId, picturePath }) => {
+const UserInfo = ({ userId, picturePath}) => {
+  const token = useSelector((state) => state.token);
+  const myUser = useSelector((state) => state.user);
+  const isMyProfile = myUser._id === userId;
   const [user, setUser] = useState(null);
+  //const isFriend = myUser.friendsList.find((friend) => friend._id === user._id);
+  const [image, setImage] = useState(null);
   const { palette } = useTheme();
   const navigate = useNavigate();
-  const token = useSelector((state) => state.token);
+  const dispatch = useDispatch();
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
-
+  
   const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
+    const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await response.json();
     setUser(data);
   };
-
-  useEffect(() => {
+  
+  
+  useEffect(() => { //empty array useeffect to only render this component once (avoid too many requests)
     getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); 
+
 
   if (!user) {
     return null;
@@ -41,11 +51,26 @@ const UserInfo = ({ userId, picturePath }) => {
     firstName,
     lastName,
     location,
-    occupation,
-    viewedProfile,
-    impressions,
-    friends,
+    status,
+    friendsList,
   } = user;
+
+  const handlePost = async () => {
+    const formData = new FormData();
+    formData.append("userId", userId);
+    if (image) {
+      formData.append("picture", image);
+      formData.append("picturePath", image.name);
+      dispatch(setUserPicture({picturePath: image.name}));
+      //setLetUpdate(true);
+    }
+
+    await fetch(`http://localhost:3001/api/users`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+  };
 
   return (
     <WrapperCSS>
@@ -53,92 +78,57 @@ const UserInfo = ({ userId, picturePath }) => {
       <FlexCSS
         gap="0.5rem"
         pb="1.1rem"
-        onClick={() => navigate(`/profile/${userId}`)}
       >
         <FlexCSS gap="1rem">
-          <UserProfilePicture image={picturePath} />
+          {image ? <UserProfilePicture picturePath={image.name}/> : (
+            <UserProfilePicture picturePath={picturePath}/>
+          )}
           <Box>
             <Typography
               variant="h4"
               color={dark}
               fontWeight="500"
-              sx={{
-                "&:hover": {
-                  color: palette.primary.light,
-                  cursor: "pointer",
-                },
-              }}
             >
               {firstName} {lastName}
             </Typography>
-            <Typography color={medium}>{friends.length} friends</Typography>
-          </Box>
-        </FlexCSS>
-        <ManageAccountsOutlined />
-      </FlexCSS>
+            <Typography color={medium}>@{firstName}{lastName}</Typography>
 
+
+          </Box>
+
+          
+          
+        </FlexCSS>
+        
+      </FlexCSS>
+      
       <Divider />
 
-      {/* SECOND ROW */}
+      {/*1st row*/}
+      <Box p="1rem 0">
+        <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
+          <PeopleAltOutlined fontSize="large" sx={{ color: main }} />
+          <Typography color={dark}>{friendsList.length} FoodMate(s)</Typography>
+        </Box>
+      </Box>
+      
+      {/*2nd row*/}
+      <Box p="1rem 0">
+        <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
+          <VerifiedOutlined fontSize="large" sx={{ color: main }} />
+          <Typography color={dark}>{status}</Typography>
+        </Box>
+      </Box>
+      
+      {/*3rd row*/}
       <Box p="1rem 0">
         <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
           <LocationOnOutlined fontSize="large" sx={{ color: main }} />
-          <Typography color={medium}>{location}</Typography>
+          <Typography color={dark}>{location}</Typography>
         </Box>
       </Box>
-
-      <Divider />
-
-      {/* THIRD ROW */}
-      <Box p="1rem 0">
-        <FlexCSS mb="0.5rem">
-          <Typography color={medium}>Who's viewed your profile</Typography>
-          <Typography color={main} fontWeight="500">
-            {viewedProfile}
-          </Typography>
-        </FlexCSS>
-        <FlexCSS>
-          <Typography color={medium}>Impressions of your post</Typography>
-          <Typography color={main} fontWeight="500">
-            {impressions}
-          </Typography>
-        </FlexCSS>
-      </Box>
-
-      <Divider />
-
-      {/* FOURTH ROW */}
-      <Box p="1rem 0">
-        <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
-          Social Profiles
-        </Typography>
-
-        <FlexCSS gap="1rem" mb="0.5rem">
-          <FlexCSS gap="1rem">
-            <img src="../assets/twitter.png" alt="twitter" />
-            <Box>
-              <Typography color={main} fontWeight="500">
-                Twitter
-              </Typography>
-              <Typography color={medium}>Social Network</Typography>
-            </Box>
-          </FlexCSS>
-          <EditOutlined sx={{ color: main }} />
-        </FlexCSS>
-
-        <FlexCSS gap="1rem">
-          <FlexCSS gap="1rem">
-            <img src="../assets/linkedin.png" alt="linkedin" />
-            <Box>
-              <Typography color={main} fontWeight="500">
-                Linkedin
-              </Typography>
-              <Typography color={medium}>Network Platform</Typography>
-            </Box>
-          </FlexCSS>
-          <EditOutlined sx={{ color: main }} />
-        </FlexCSS>
-      </Box>
+      
+    
     </WrapperCSS>
   );
 };

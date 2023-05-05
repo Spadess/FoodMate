@@ -3,12 +3,13 @@ import {
   Box,
   Button,
   TextField,
-  useMediaQuery,
   Typography,
   useTheme,
 } from "@mui/material";
+import FlexCSS from "components/FlexCSS";
 import { Formik } from "formik";
 import * as yup from "yup";
+import Dropzone from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "states";
@@ -18,7 +19,8 @@ const registerSchema = yup.object().shape({
   lastName: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
-  location: yup.string().required("required")
+  location: yup.string().required("required"),
+  picture: yup.string().required("required"),
 });
 
 const loginSchema = yup.object().shape({
@@ -31,7 +33,8 @@ const initialValuesRegister = {
   lastName: "",
   email: "",
   password: "",
-  location: ""
+  location: "",
+  picture: ""
 };
 
 const initialValuesLogin = {
@@ -44,40 +47,44 @@ const Form = () => {
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
   const register = async (values, onSubmitProps) => {
-    const savedUserResponse = await fetch(
+    const formData = new FormData();
+    for (let value in values) {
+      formData.append(value, values[value]);
+    }
+    formData.append("picturePath", values.picture.name);
+    
+    const registerResponse = await fetch(
       "http://localhost:3001/api/auth/register",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: formData,
       }
     );
-    const savedUser = await savedUserResponse.json();
+    const res = await registerResponse.json();
     onSubmitProps.resetForm();
 
-    if (savedUser) {
+    if (res) {
       setPageType("login");
     }
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3001/api/auth/login", {
+    const loginResponse = await fetch("http://localhost:3001/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
-    const loggedIn = await loggedInResponse.json();
+    const res = await loginResponse.json();
     onSubmitProps.resetForm();
-    if (loggedIn) {
+    if (res) {
       dispatch(
         setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
+          user: res.user,
+          token: res.token,
         })
       );
       navigate("/home");
@@ -102,6 +109,7 @@ const Form = () => {
         handleBlur,
         handleChange,
         handleSubmit,
+        setFieldValue,
         resetForm,
       }) => (
         <form onSubmit={handleSubmit}>
@@ -110,7 +118,7 @@ const Form = () => {
             gap="30px"
             gridTemplateColumns="repeat(4, minmax(0, 1fr))"
             sx={{
-              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+              "& > div": { gridColumn: undefined },
             }}
           >
             {isRegister && (
@@ -119,7 +127,7 @@ const Form = () => {
                   label="First Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.firstName}
+                  value={values.firstName || ''}
                   name="firstName"
                   error={
                     Boolean(touched.firstName) && Boolean(errors.firstName)
@@ -131,7 +139,7 @@ const Form = () => {
                   label="Last Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.lastName}
+                  value={values.lastName || ''}
                   name="lastName"
                   error={Boolean(touched.lastName) && Boolean(errors.lastName)}
                   helperText={touched.lastName && errors.lastName}
@@ -141,12 +149,46 @@ const Form = () => {
                   label="Location"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.location}
+                  value={values.location || ''}
                   name="location"
                   error={Boolean(touched.location) && Boolean(errors.location)}
                   helperText={touched.location && errors.location}
-                  sx={{ gridColumn: "span 4" }}
+                  sx={{ gridColumn: "span 2" }}
                 />
+                 <Box
+                  gridColumn="span 2"
+                  border={`1px solid ${palette.neutral.medium}`}
+                  borderRadius="5px"
+                  
+                  sx={{height: "100%"}}
+                >
+                  <Dropzone
+                    acceptedFiles=".jpg,.jpeg,.png"
+                    multiple={false}
+                    onDrop={(acceptedFiles) =>
+                      setFieldValue("picture", acceptedFiles[0])
+                    }
+                  >
+                    {({ getRootProps, getInputProps }) => (
+                      <Box
+                        {...getRootProps()}
+                        textAlign="center"
+                        border={`2px dashed ${palette.primary.main}`}
+                      
+                        sx={{ "&:hover": { cursor: "pointer" } }}
+                      >
+                        <input {...getInputProps()} />
+                        {!values.picture ? (
+                          <p>Add Profile Picture</p>
+                        ) : (
+                          <FlexCSS>
+                            <Typography p="0.9rem" >{values.picture.name}</Typography>
+                          </FlexCSS>
+                        )}
+                      </Box>
+                    )}
+                  </Dropzone>
+                </Box>
               </>
             )}
 
@@ -154,7 +196,7 @@ const Form = () => {
               label="Email"
               onBlur={handleBlur}
               onChange={handleChange}
-              value={values.email}
+              value={values.email || ''}
               name="email"
               error={Boolean(touched.email) && Boolean(errors.email)}
               helperText={touched.email && errors.email}
@@ -165,7 +207,7 @@ const Form = () => {
               type="password"
               onBlur={handleBlur}
               onChange={handleChange}
-              value={values.password}
+              value={values.password || ''}
               name="password"
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
@@ -173,21 +215,25 @@ const Form = () => {
             />
           </Box>
 
-          {/* BUTTONS */}
-          <Box>
-            <Button
-              fullWidth
+          {/*BUTTONS*/}
+          <Box
+            gap="30px"
+            sx={{textAlign: "center"}}
+           > 
+           <Button
               type="submit"
               sx={{
+                width: "50%",
                 m: "2rem 0",
                 p: "1rem",
-                backgroundColor: palette.primary.main,
-                color: palette.background.alt,
-                "&:hover": { color: palette.primary.main },
+                backgroundColor: "#A10500",
+                color: "#F2E9EA",
+                "&:hover": { color: "#DF4661" },
               }}
             >
               {isLogin ? "LOGIN" : "REGISTER"}
             </Button>
+          
             <Typography
               onClick={() => {
                 setPageType(isLogin ? "register" : "login");
