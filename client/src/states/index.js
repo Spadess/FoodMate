@@ -40,14 +40,9 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
-    setUserPicture: (state, action) => {
-      if(state.user){
-          state.user.picturePath = action.payload.picturePath;
-      }
-
-    }
+   
   }
 });
 
-export const {setMode, setLogin, setLogout, setFriends, setPosts, setPost, setUserPicture} = authSlice.actions;
+export const {setMode, setLogin, setLogout, setFriends, setPosts, setPost} = authSlice.actions;
 export default authSlice.reducer;

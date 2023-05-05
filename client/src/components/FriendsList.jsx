@@ -10,7 +10,6 @@ const FriendsList = ({ userId }) => {
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
   const friendsList = useSelector((state) => state.user.friendsList);
-  //console.log(friendsList);
 
   const getFriends = async () => {
     const response = await fetch(

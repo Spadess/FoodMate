@@ -15,7 +15,9 @@ const Posts = ({ userId, isProfile = false }) => {
     });
     const data = await response.json();
     dispatch(setPosts({ posts: data }));
+    console.log(data.length);
   };
+
 
   const getUserPosts = async () => {
     const response = await fetch(

@@ -24,7 +24,7 @@ const Advertisement = ({adPublisher, description, adPicture}) => {
         src={`http://localhost:3001/pictures/${adPicture}`}
         style={{ borderRadius: "0.75rem", margin: "0.75rem 0" }}
       />
-      <Typography align="center" color={dark} m="0.5rem 0">
+      <Typography   align="center" color={dark} m="0.5rem 0">
         {description}
       </Typography>
     </WrapperCSS>
