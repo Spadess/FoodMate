@@ -26,7 +26,10 @@ const userSchema = new mongoose.Schema({
     min: 5,
   },
   
-  picturePath: String,
+  picturePath:{
+    type: String,
+    default: "undefined.png",
+  },
   
   friendsList:{
     type: Array,

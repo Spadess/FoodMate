@@ -11,7 +11,6 @@ import Friend from "components/Friend";
 import WrapperCSS from "components/WrapperCSS";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-//import { useNavigate } from "react-router-dom";
 import { setPost, setPosts } from "states";
 
 const Post = ({
@@ -33,7 +32,6 @@ const Post = ({
   const userId = useSelector((state) => state.user._id);
   const isLiked = Boolean(likes[userId]);
   const likeCount = Object.keys(likes).length;
-  //console.log(picturePath);
   const { palette } = useTheme();
   const dark = palette.neutral.dark;
   const primary = palette.primary.main;
@@ -135,6 +133,7 @@ const Post = ({
       </FlexCSS>
       {commentSection && (
         <Box mt="0.5rem">
+         
           <Box>
           <FlexCSS>
             <InputBase
@@ -142,7 +141,7 @@ const Post = ({
             onChange={(e) => setComment(e.target.value)}
             value={comment}
             sx={{
-              width: "100%",
+              width: "80%",
               backgroundColor: palette.neutral.light,
               borderRadius: "2rem",
               padding: "1rem 2rem",

@@ -5,9 +5,12 @@ import {
   InputBase,
   Select,
   Typography,
+  ListItemText,
   MenuItem,
   FormControl,
-  useTheme
+  useTheme,
+  List,
+  ListItem
 } from "@mui/material";
 import {
   Search,
@@ -20,16 +23,48 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "states";
 import { useNavigate } from "react-router-dom";
 import FlexCSS from "components/FlexCSS";
+import { useState, useEffect } from "react";
 
 const NavigationBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  const token = useSelector((state) => state.token);
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
   const dark = theme.palette.neutral.dark;
   const alt = theme.palette.background.alt;
+  const medium = theme.palette.neutral.medium;
   const fullName = `${user.firstName} ${user.lastName}`;
+  
+  
+  const [users, setUsers] = useState([]); 
+  
+  useEffect(() => {
+    async function fetchData() {
+      const foundUsers = await fetch(`http://localhost:3001/api/users/`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}`},
+      });
+
+      setUsers(await foundUsers.json());
+    }
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
+
+  const searchUser = async (e) => {
+    const searchValue = e.target.value;
+    const foundUsers = await fetch(`http://localhost:3001/api/users?search=${searchValue}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+    setUsers(await foundUsers.json()); 
+  };
+
+  
 
   return (
     <FlexCSS  padding="1rem 6%" backgroundColor={alt}>
@@ -58,12 +93,39 @@ const NavigationBar = () => {
             gap="5rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search" />
+            <InputBase placeholder="Search" onChange={searchUser}/>
             <IconButton>
               <Search />
             </IconButton>
           </FlexCSS>
         
+            {users.length !== 0 && (
+              <Box backgroundColor={neutralLight} borderRadius="9px">
+                <List dense={true} >
+                {users.map((usr,i) => {
+                  return (
+                    <ListItem 
+                    sx={{
+                      "&:hover": {
+                        color: medium,
+                        cursor: "pointer",
+                      },
+                      }}
+                      onClick={() => {navigate(`/profile/${usr._id}`); navigate(0)}}
+                    >
+                      <ListItemText
+                        
+                        primary={`${usr.firstName} ${usr.lastName}`}
+                        secondary={usr.email}
+                      />
+                    </ListItem>
+                  )
+                })}
+           
+              </List>
+              </Box>
+              )
+            }
          
         <FlexCSS gap="2rem">
           <IconButton onClick={() => dispatch(setMode())}>

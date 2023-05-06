@@ -88,5 +88,54 @@ export const getUserFriends = async(req, res) => {
   }
 };
 
+export const searchUsers = async (req,res) => {
+  try{
+    const { search } = req.query;
+    let users;
+
+    if(search){
+      users = await User.aggregate(
+        [
+          {
+            '$search': {
+              'index': 'SearchUsers',
+              //'compound':{
+                //'must':[{
+                  'autocomplete': {
+                    'query': search, 
+                    'path': 'firstName'
+                  },
+                  //'autocomplete': {
+                    //'query': search, 
+                    //'path': 'lastName'
+                  //},
+                //}]
+              //}
+              
+            }
+          }, {
+            '$limit': 5
+          }, {
+            '$project': {
+              'firstName': 1, 
+              'lastName': 1, 
+              'email': 1
+            }
+          }
+        ]
+      )
+    } else{
+      users = [];
+    }
+    
+    console.log(users);
+    return res.status(200).json(users);
+
+
+  }catch(error){
+    res.status(404).json({Error: error.message});
+  }
+}
+
 
  

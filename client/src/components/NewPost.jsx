@@ -25,6 +25,7 @@ const NewPost = () => {
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState("");
+  var allowPost = (image || post);
   const { palette } = useTheme();
   const { _id, picturePath } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -134,7 +135,7 @@ const NewPost = () => {
           </FlexCSS>
           
         <Button
-          disabled={!post}
+          disabled={!allowPost}
           onClick={() => {handlePost() ; setIsImage(!isImage)}}
           
           sx={{
