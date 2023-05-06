@@ -1,6 +1,6 @@
 import { Box, Typography, useTheme} from "@mui/material";
-import Form from "../../components/Form.jsx";
-import logo from "../../logo.png"
+import Form from "../components/Form.jsx";
+import logo from "../logo.png"
 
 const LoginPage = () => {
   const theme = useTheme();

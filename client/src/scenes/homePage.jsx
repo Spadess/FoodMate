@@ -1,11 +1,11 @@
 import { Box} from "@mui/material";
 import { useSelector } from "react-redux";
-import NavigationBar from "scenes/navigationBar";
-import UserInfo from "../../components/UserInfo";
-import NewPost from "../../components/NewPost";
-import Posts from "../../components/Posts";
-import Advertisement from "../../components/Advertisement";
-import FriendsList from "../../components/FriendsList";
+import NavigationBar from "./navigationBar";
+import UserInfo from "../components/UserInfo";
+import NewPost from "../components/NewPost";
+import Posts from "../components/Posts";
+import Advertisement from "../components/Advertisement";
+import FriendsList from "../components/FriendsList";
 
 const HomePage = () => {
   const { _id, picturePath } = useSelector((state) => state.user);

@@ -2,12 +2,12 @@ import { Box} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import NavigationBar from "scenes/navigationBar";
-import Posts from "../../components/Posts";
-import NewPost from "../../components/NewPost";
-import Advertisement from "../../components/Advertisement";
-import UserInfo from "../../components/UserInfo";
-import FriendsList from "../../components/FriendsList";
+import NavigationBar from "./navigationBar";
+import Posts from "../components/Posts";
+import NewPost from "../components/NewPost";
+import Advertisement from "../components/Advertisement";
+import UserInfo from "../components/UserInfo";
+import FriendsList from "../components/FriendsList";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
