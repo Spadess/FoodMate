@@ -65,12 +65,14 @@ const Post = ({
     
   };
 
-  const deleteComment = async () => {
+  const deletePost = async () => {
     const response = await fetch(`http://localhost:3001/api/posts/${postId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
     const updatedPosts = await response.json();
+    console.log("nb de posts: ", updatedPosts.length);
+    console.log(updatedPosts);
     dispatch(setPosts({ posts: updatedPosts }));
   };
 
@@ -123,7 +125,7 @@ const Post = ({
         </FlexCSS>
         
         {(postUserId === userId) &&
-        <IconButton onClick={deleteComment}>
+        <IconButton onClick={deletePost}>
           <DeleteOutlined/>
         </IconButton>
         }

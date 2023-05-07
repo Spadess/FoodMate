@@ -40,6 +40,11 @@ const NewPost = () => {
       formData.append("picture", image);
       formData.append("picturePath", image.name);
     }
+  
+    console.log("le client envoie\n");
+    for (var pair of formData.entries()) {
+      console.log(pair[0]+ ': ' + pair[1]); 
+  }
 
     const response = await fetch(`http://localhost:3001/api/posts`, {
       method: "POST",
@@ -47,6 +52,9 @@ const NewPost = () => {
       body: formData,
     });
     const posts = await response.json();
+    
+    console.log("reponse backend\n", posts);
+    
     dispatch(setPosts({ posts }));
     setImage(null);
     setPost("");

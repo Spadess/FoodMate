@@ -1,21 +1,24 @@
 import {
   LocationOnOutlined,
   VerifiedOutlined,
-  PeopleAltOutlined
+  PeopleAltOutlined,
+  PersonAddOutlined, 
+  PersonRemoveOutlined
 } from "@mui/icons-material";
-import { Box, Typography, Divider, useTheme } from "@mui/material";
+import { Box, Typography, Divider, useTheme, IconButton } from "@mui/material";
 import UserProfilePicture from "components/UserProfilePicture";
 import FlexCSS from "components/FlexCSS";
 import WrapperCSS from "components/WrapperCSS";
-import { useSelector } from "react-redux";
+import { setFriends } from "states";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 
 const UserInfo = ({ userId, picturePath}) => {
   const token = useSelector((state) => state.token);
   const myUser = useSelector((state) => state.user);
-  
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
-  
+  const isFriend = myUser.friendsList.find((friend) => friend._id === userId);
   const { palette } = useTheme();
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
@@ -28,6 +31,21 @@ const UserInfo = ({ userId, picturePath}) => {
     });
     const data = await response.json();
     setUser(data);
+  };
+
+  const patchFriend = async () => {
+    const response = await fetch(
+      `http://localhost:3001/api/users/${myUser._id}/${userId}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    dispatch(setFriends({ friendsList : data }));
   };
 
   
@@ -74,6 +92,20 @@ const UserInfo = ({ userId, picturePath}) => {
             <Typography color={medium}>@{firstName}{lastName}</Typography>
 
           </Box>
+
+          {(userId !== myUser._id) &&
+      
+            <IconButton
+              onClick={() => patchFriend()}
+              sx={{ p: "0.6rem" }}
+            >
+              {isFriend ? (
+                <PersonRemoveOutlined sx={{ color: dark }} />
+              ) : (
+                <PersonAddOutlined sx={{ color: dark }} />
+              )}
+            </IconButton>
+          }
 
           
         </FlexCSS>

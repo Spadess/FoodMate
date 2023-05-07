@@ -15,7 +15,8 @@ const Posts = ({ userId, isProfile = false }) => {
     });
     const data = await response.json();
     dispatch(setPosts({ posts: data }));
-    console.log(data.length);
+    console.log("nb de posts: ", data.length);
+    console.log(data);
   };
 
 
