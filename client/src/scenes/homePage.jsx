@@ -12,6 +12,7 @@ const HomePage = () => {
   const adPublisher = ["McDonald's", "Burger King"];
   const description = ["I'm lovin' it", "Have it Your Way" ];
   const adPicture = ["mcdo.jpg", "bk.jpg"];
+  const adURL = ["https://www.mcdonalds.fr/","https://www.burgerking.fr/"];
 
   return (
     <Box>
@@ -36,8 +37,8 @@ const HomePage = () => {
         </Box>
 
         <Box flexBasis="26%">
-          <Advertisement adPublisher={adPublisher[0]} description={description[0]} adPicture={adPicture[0]}/>
-          <Advertisement adPublisher={adPublisher[1]} description={description[1]} adPicture={adPicture[1]}/>
+          <Advertisement adPublisher={adPublisher[0]} description={description[0]} adPicture={adPicture[0]} adURL ={adURL[0]}/>
+          <Advertisement adPublisher={adPublisher[1]} description={description[1]} adPicture={adPicture[1]} adURL ={adURL[1]}/>
           
           
         </Box>

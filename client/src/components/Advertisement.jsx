@@ -2,13 +2,13 @@ import { Typography, useTheme } from "@mui/material";
 import FlexCSS from "components/FlexCSS";
 import WrapperCSS from "components/WrapperCSS";
 
-const Advertisement = ({adPublisher, description, adPicture}) => {
+const Advertisement = ({adPublisher, description, adPicture, adURL}) => {
   const { palette } = useTheme();
   const dark = palette.neutral.dark;
   const main = palette.neutral.main;
 
   return (
-    <WrapperCSS mb="2rem">
+    <WrapperCSS mb="2rem" sx={{ "&:hover": { cursor: "pointer" } }} onClick={()=>  window.location.replace(adURL)}>
       <FlexCSS >
         <Typography color={dark} variant="h5" fontWeight="500" align="center" >
           {adPublisher}
