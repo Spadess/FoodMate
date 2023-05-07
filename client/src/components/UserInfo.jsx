@@ -83,6 +83,7 @@ const UserInfo = ({ userId, picturePath}) => {
           
           <Box>
             <Typography
+              component={'span'}
               variant="h4"
               color={dark}
               fontWeight="500"
@@ -118,7 +119,7 @@ const UserInfo = ({ userId, picturePath}) => {
       <Box p="1rem 0">
         <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
           <PeopleAltOutlined fontSize="large" sx={{ color: main }} />
-          <Typography color={dark}>
+          <Typography component={'span'} color={dark}>
             
             {(user._id ===  myUser._id)  ? 
               <div> {myUser.friendsList.length} FoodMate(s) </div>
@@ -136,7 +137,7 @@ const UserInfo = ({ userId, picturePath}) => {
       <Box p="1rem 0">
         <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
           <VerifiedOutlined fontSize="large" sx={{ color: main }} />
-          <Typography color={dark}>{status}</Typography>
+          <Typography component={'span'} color={dark}>{status}</Typography>
         </Box>
       </Box>
       
@@ -144,7 +145,7 @@ const UserInfo = ({ userId, picturePath}) => {
       <Box p="1rem 0">
         <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
           <LocationOnOutlined fontSize="large" sx={{ color: main }} />
-          <Typography color={dark}>{location}</Typography>
+          <Typography component={'span'} color={dark}>{location}</Typography>
         </Box>
       </Box>
       

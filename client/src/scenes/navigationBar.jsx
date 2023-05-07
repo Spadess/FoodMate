@@ -105,6 +105,7 @@ const NavigationBar = () => {
                 {users.map((usr,i) => {
                   return (
                     <ListItem 
+                    key={i}
                     sx={{
                       "&:hover": {
                         color: medium,
