@@ -4,7 +4,7 @@ import User from "../models/User.js";
 //CREATE
 export const createPost = async (req, res) => {
   try {
-    const { userId, description, picturePath} = req.body;
+    const { userId, description, picturePath, videoPath} = req.body;
     const user = await User.findById(userId);
     const newPost = new Post({
       userId,
@@ -14,6 +14,7 @@ export const createPost = async (req, res) => {
       description,
       userPicturePath: user.picturePath,
       picturePath,
+      videoPath,
       likes: {},
       comments: [],
     });
@@ -31,6 +32,7 @@ export const getFeedPosts = async (req, res) => {
   try {
     const post = await Post.find().sort({createdAt : -1}); //sort posts by creation date
     res.status(200).json(post);
+    //console.log(post);
   } catch (error) {
     res.status(404).json({Error: error.message});
   }

@@ -24,8 +24,9 @@ const NewPost = () => {
   const dispatch = useDispatch();
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
+  const [video, setVideo] = useState(null);
   const [post, setPost] = useState("");
-  var allowPost = (image || post);
+  var allowPost = (image || post || video);
   const { palette } = useTheme();
   const { _id, picturePath } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -40,23 +41,48 @@ const NewPost = () => {
       formData.append("picture", image);
       formData.append("picturePath", image.name);
     }
+    if(video){
+      formData.append("video", video);
+      formData.append("videoPath", video.name);
+    }
   
-    console.log("le client envoie\n");
+    /*console.log("client sent\n");
     for (var pair of formData.entries()) {
       console.log(pair[0]+ ': ' + pair[1]); 
-  }
+  }*/
 
-    const response = await fetch(`http://localhost:3001/api/posts`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
-    const posts = await response.json();
+    var response;
+    if(video){
+      response = await fetch(`http://localhost:3001/api/posts/videoUpload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+    }
+
+    else if(image){
+      response = await fetch(`http://localhost:3001/api/posts/pictureUpload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+    }
+
+    else{
+      response = await fetch(`http://localhost:3001/api/posts`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+    }
+
     
-    console.log("reponse backend\n", posts);
+    const posts = await response.json();
+    //console.log("backend response\n", posts);
     
     dispatch(setPosts({ posts }));
     setImage(null);
+    setVideo(null);
     setPost("");
   };
 
@@ -123,13 +149,36 @@ const NewPost = () => {
           </FlexCSS>
 
         <FlexCSS gap="0.25rem">
-          <VideocamOutlined sx={{ color: mediumMain }} />
-          <Typography
-            color={mediumMain}
-            sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+        <VideocamOutlined sx={{ color: mediumMain }} />
+        <Dropzone
+            accept= {{
+              'video/mp4': ['.mp4', '.MP4'],
+            }}
+            acceptedFiles=".mp4, .MP4"
+            multiple={false}
+            onDrop={(acceptedFiles) => setVideo(acceptedFiles[0])}
           >
-            Video
-          </Typography>
+            {({ getRootProps, getInputProps }) => (
+              
+                <Box
+                  {...getRootProps()}
+                  width="100%"
+                  height="10%"
+                  sx={{ "&:hover": { cursor: "pointer" } }}
+                  
+                >
+                  <input {...getInputProps()} />
+                  
+                  <Typography
+                    color={mediumMain}
+                    sx={{ "&:hover": { cursor: "pointer", color: medium } }}
+                  >
+                    Video
+                  </Typography>
+                </Box>
+              
+            )}
+          </Dropzone>
         </FlexCSS>
 
           <FlexCSS gap="0.25rem">

@@ -9,9 +9,10 @@ import { Button, Divider, Box, IconButton, Typography, useTheme, InputBase } fro
 import FlexCSS from "components/FlexCSS";
 import Friend from "components/Friend";
 import WrapperCSS from "components/WrapperCSS";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost, setPosts } from "states";
+import ReactPlayer from 'react-player';
 
 const Post = ({
   postId,
@@ -20,6 +21,7 @@ const Post = ({
   lastName,
   description,
   picturePath,
+  videoPath,
   userPicturePath,
   likes,
   comments,
@@ -30,6 +32,7 @@ const Post = ({
   const [comment, setComment] = useState("");
   const token = useSelector((state) => state.token);
   const userId = useSelector((state) => state.user._id);
+  const playerRef = useRef(null);
   const isLiked = Boolean(likes[userId]);
   const likeCount = Object.keys(likes).length;
   const { palette } = useTheme();
@@ -71,8 +74,8 @@ const Post = ({
       headers: { Authorization: `Bearer ${token}` },
     });
     const updatedPosts = await response.json();
-    console.log("nb de posts: ", updatedPosts.length);
-    console.log(updatedPosts);
+    //console.log("nb of posts: ", updatedPosts.length);
+    //console.log(updatedPosts);
     dispatch(setPosts({ posts: updatedPosts }));
   };
 
@@ -97,6 +100,10 @@ const Post = ({
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
           src={`http://localhost:3001/pictures/${picturePath}`}
         />
+     }
+
+     {(videoPath) &&
+      <ReactPlayer ref={playerRef} url={`http://localhost:3001/videos/${videoPath}`} controls={true} />
      }
 
       <Typography color={medium} sx={{ mt: "0.75rem" }}>

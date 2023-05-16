@@ -5,7 +5,17 @@ import {
   PersonAddOutlined, 
   PersonRemoveOutlined
 } from "@mui/icons-material";
-import { Box, Typography, Divider, useTheme, IconButton } from "@mui/material";
+import { Box, 
+  Typography, 
+  Divider, 
+  useTheme, 
+  IconButton, 
+  Button, 
+  Dialog, 
+  DialogTitle, 
+  DialogContent,
+  DialogContentText
+} from "@mui/material";
 import UserProfilePicture from "components/UserProfilePicture";
 import FlexCSS from "components/FlexCSS";
 import WrapperCSS from "components/WrapperCSS";
@@ -18,11 +28,13 @@ const UserInfo = ({ userId, picturePath}) => {
   const myUser = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
+  const [open, setOpen] = useState(false);
   const isFriend = myUser.friendsList.find((friend) => friend._id === userId);
   const { palette } = useTheme();
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;
+  const bgcolor = palette.background.default;
   
   const getUser = async () => {
     const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
@@ -46,6 +58,14 @@ const UserInfo = ({ userId, picturePath}) => {
     );
     const data = await response.json();
     dispatch(setFriends({ friendsList : data }));
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   
@@ -95,7 +115,8 @@ const UserInfo = ({ userId, picturePath}) => {
           </Box>
 
           {(userId !== myUser._id) &&
-      
+
+            <FlexCSS>
             <IconButton
               onClick={() => patchFriend()}
               sx={{ p: "0.6rem" }}
@@ -106,6 +127,44 @@ const UserInfo = ({ userId, picturePath}) => {
                 <PersonAddOutlined sx={{ color: dark }} />
               )}
             </IconButton>
+           
+              {(user.status === "Chef") && 
+                
+                <Button
+                  onClick={handleClickOpen}
+                  sx={{
+                    borderRadius: "3rem",
+                    backgroundColor: "#A10500",
+                    color: "#F2E9EA",
+                    "&:hover": { color: "#DF4661" }
+                  }}
+                >
+                  Subscribe
+                </Button>
+                
+              }
+               <Dialog
+                PaperProps={{
+                  style:{backgroundColor:`${bgcolor}`}
+                }}
+                
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+            <DialogTitle id="alert-dialog-title">
+              {`Subscribe to ${user.firstName} ${user.lastName}`}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Subscription perks...
+              </DialogContentText>
+            </DialogContent>
+            
+          </Dialog>
+            </FlexCSS>
+            
           }
 
           

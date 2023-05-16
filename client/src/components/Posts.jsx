@@ -15,8 +15,8 @@ const Posts = ({ userId, isProfile = false }) => {
     });
     const data = await response.json();
     dispatch(setPosts({ posts: data }));
-    console.log("nb de posts: ", data.length);
-    console.log(data);
+    //console.log("nb of posts: ", data.length);
+    //console.log(data);
   };
 
 
@@ -43,7 +43,7 @@ const Posts = ({ userId, isProfile = false }) => {
 
   return (
     <>
-      {posts.map(
+      {posts.length > 0 && posts.map(
         ({
           _id,
           userId,
@@ -51,6 +51,7 @@ const Posts = ({ userId, isProfile = false }) => {
           lastName,
           description,
           picturePath,
+          videoPath,
           userPicturePath,
           likes,
           comments,
@@ -64,6 +65,7 @@ const Posts = ({ userId, isProfile = false }) => {
             lastName={lastName}
             description={description}
             picturePath={picturePath}
+            videoPath={videoPath}
             userPicturePath={userPicturePath}
             likes={likes}
             comments={comments}
