@@ -119,7 +119,8 @@ export const searchUsers = async (req,res) => {
             '$project': {
               'firstName': 1, 
               'lastName': 1, 
-              'email': 1
+              'email': 1,
+              'picturePath': 1
             }
           }
         ]

@@ -9,8 +9,8 @@ import {
   MenuItem,
   FormControl,
   useTheme,
-  List,
-  ListItem
+  MenuList,
+  Divider
 } from "@mui/material";
 import {
   Search,
@@ -24,6 +24,8 @@ import { setMode, setLogout } from "states";
 import { useNavigate } from "react-router-dom";
 import FlexCSS from "components/FlexCSS";
 import { useState, useEffect } from "react";
+import UserProfilePicture from "components/UserProfilePicture";
+import WrapperCSS from "components/WrapperCSS";
 
 const NavigationBar = () => {
   const dispatch = useDispatch();
@@ -34,11 +36,8 @@ const NavigationBar = () => {
   const neutralLight = theme.palette.neutral.light;
   const dark = theme.palette.neutral.dark;
   const alt = theme.palette.background.alt;
-  const medium = theme.palette.neutral.medium;
   const fullName = `${user.firstName} ${user.lastName}`;
-  
-  
-  const [users, setUsers] = useState([]); 
+  const [users, setUsers] = useState([]);
   
   useEffect(() => {
     async function fetchData() {
@@ -100,31 +99,39 @@ const NavigationBar = () => {
           </FlexCSS>
         
             {users.length !== 0 && (
-              <Box backgroundColor={neutralLight} borderRadius="9px">
-                <List dense={true} >
+             
+               <WrapperCSS width="20rem" height="5rem" sx={{position:"absolute", ml:"24rem", mt:"8rem", p:"0.2rem"}}>
+                <MenuList >
                 {users.map((usr,i) => {
                   return (
-                    <ListItem 
-                    key={i}
-                    sx={{
-                      "&:hover": {
-                        color: medium,
-                        cursor: "pointer",
-                      },
-                      }}
+                    
+                    <Box 
+                      backgroundColor={alt}
+                      sx={{"&:hover": {cursor: "pointer"}}}
                       onClick={() => {navigate(`/profile/${usr._id}`); navigate(0)}}
+                      display= "flex"
+                      justifyContent= "start"
+                      >
+                    <UserProfilePicture picturePath= {usr.picturePath} size="55px"/>
+                    <MenuItem 
+                      key={i}
+                      sx={{"&:hover": {backgroundColor: "#00000000"}}}
                     >
+                      
                       <ListItemText
                         
                         primary={`${usr.firstName} ${usr.lastName}`}
-                        secondary={usr.email}
+                        secondary={`@${usr.firstName}${usr.lastName}`}
                       />
-                    </ListItem>
+                    </MenuItem>
+                    
+                    </Box>
+                   
                   )
                 })}
            
-              </List>
-              </Box>
+              </MenuList>
+              </WrapperCSS>
               )
             }
          

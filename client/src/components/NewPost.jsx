@@ -99,7 +99,9 @@ const NewPost = () => {
             backgroundColor: palette.neutral.light,
             borderRadius: "2rem",
             padding: "1rem 2rem",
+            cursor: "none"
           }}
+          style={{cursor:"none"}}
         />
       </FlexCSS>
       

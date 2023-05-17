@@ -3,7 +3,7 @@ import {
   VerifiedOutlined,
   PeopleAltOutlined,
   PersonAddOutlined, 
-  PersonRemoveOutlined
+  PersonRemoveOutlined,
 } from "@mui/icons-material";
 import { Box, 
   Typography, 
@@ -13,8 +13,7 @@ import { Box,
   Button, 
   Dialog, 
   DialogTitle, 
-  DialogContent,
-  DialogContentText
+  DialogContent
 } from "@mui/material";
 import UserProfilePicture from "components/UserProfilePicture";
 import FlexCSS from "components/FlexCSS";
@@ -145,23 +144,66 @@ const UserInfo = ({ userId, picturePath}) => {
               }
                <Dialog
                 PaperProps={{
-                  style:{backgroundColor:`${bgcolor}`}
+                  style:{backgroundColor:`${bgcolor}`, padding: 20, borderRadius: "1rem"}
                 }}
-                
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                titleStyle={{textAlign: "center"}}
+                sx={{textAlign: "center"}}
               >
             <DialogTitle id="alert-dialog-title">
-              {`Subscribe to ${user.firstName} ${user.lastName}`}
+              {`${user.firstName} ${user.lastName} Kitchen Pass` }
             </DialogTitle>
             <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Subscription perks...
-              </DialogContentText>
+              <Typography id="alert-dialog-description" >
+                Kitchen Pass lets you access exclusive content, <br/> recipes, tips, merchandise and live showcases!
+              </Typography>
             </DialogContent>
-            
+            <FlexCSS >
+              <Typography sx={{ml:"1.9rem"}}>Essential</Typography>
+              <Typography sx={{ml:"-0.7rem"}}>Premium</Typography>
+              <Typography sx={{mr:"2.3rem"}}>Deluxe</Typography>
+            </FlexCSS>
+            <FlexCSS>
+            <Button
+                  onClick={handleClickOpen}
+                  sx={{
+                    ml: "1.6rem",
+                    borderRadius: "3rem",
+                    backgroundColor: "#A10500",
+                    color: "#F2E9EA",
+                    "&:hover": { color: "#DF4661" }
+                  }}
+                >
+                  €4.99
+                </Button>
+                <Button
+                  onClick={handleClickOpen}
+                  sx={{
+                    
+                    borderRadius: "3rem",
+                    backgroundColor: "#A10500",
+                    color: "#F2E9EA",
+                    "&:hover": { color: "#DF4661" }
+                  }}
+                >
+                  €7.99
+                </Button>
+                <Button
+                  onClick={handleClickOpen}
+                  sx={{
+                    mr: "1.6rem",
+                    borderRadius: "3rem",
+                    backgroundColor: "#A10500",
+                    color: "#F2E9EA",
+                    "&:hover": { color: "#DF4661" }
+                  }}
+                >
+                  €9.99
+                </Button>
+                </FlexCSS>
           </Dialog>
             </FlexCSS>
             
